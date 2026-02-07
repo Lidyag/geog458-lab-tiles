@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>GEOG 458 – Tile Sets Web Map</title>
+
+  
+  <link
+    href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css"
+    rel="stylesheet"
+  />
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+    }
+    #menu {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: white;
+      padding: 10px;
+      z-index: 1;
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+  
+  <div id="menu">
+    <label>
+      <input type="checkbox" id="toggle-tileset-1" checked>
+      Tileset 1 – QGIS Basemap
+    </label><br>
+
+    <label>
+      <input type="checkbox" id="toggle-tileset-2">
+      Tileset 2 – UW Landmarks
+    </label><br>
+
+    <label>
+      <input type="checkbox" id="toggle-tileset-3">
+      Tileset 3 – Combined
+    </label>
+  </div>
+
+  
+  <div id="map"></div>
+
+  
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoibGlkeWFnIiwiYSI6ImNta3owcmc4ZjBjdWkzaG9kcHUxNDV4OWYifQ.nt80k6jNOcPMQgRw1Lk8Eg';
+
+    
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/lidyag/cmla1s5yr007c01stdok30g9q',
+      center: [-122.3080, 47.6550],
+      zoom: 15
+    });
+
+    map.on('load', () => {
+
+      
+      map.addSource('tileset-1', {
+  type: 'raster',
+  tiles: [
+    'assets/tileset_1/tileset_1/{z}/{x}/{y}.png'
+  ],
+  tileSize: 256,
+  attribution: 'Tileset 1 basemap'
+});
+
+
+      map.addLayer({
+        id: 'tileset-1-layer',
+        type: 'raster',
+        source: 'tileset-1'
+      });
+
+      
+      map.addSource('tileset-2', {
+        type: 'raster',
+        tiles: ['assets/tileset_2/tileset_2/{z}/{x}/{y}.png'],
+        tileSize: 256
+      });
+
+      map.addLayer({
+        id: 'tileset-2-layer',
+        type: 'raster',
+        source: 'tileset-2',
+        minzoom: 15,
+        maxzoom: 18,
+        layout: { visibility: 'none' }
+      });
+
+      
+      map.addSource('tileset-3', {
+        type: 'raster',
+        tiles: ['assets/tileset_3/tileset_3/{z}/{x}/{y}.png'],
+        tileSize: 256
+      });
+
+      map.addLayer({
+        id: 'tileset-3-layer',
+        type: 'raster',
+        source: 'tileset-3',
+        minzoom: 15,
+        maxzoom: 18,
+        layout: { visibility: 'none' }
+      });
+    });
+
+    
+    document.getElementById('toggle-tileset-1').addEventListener('change', (e) => {
+      map.setLayoutProperty(
+        'tileset-1-layer',
+        'visibility',
+        e.target.checked ? 'visible' : 'none'
+      );
+    });
+
+    document.getElementById('toggle-tileset-2').addEventListener('change', (e) => {
+      map.setLayoutProperty(
+        'tileset-2-layer',
+        'visibility',
+        e.target.checked ? 'visible' : 'none'
+      );
+    });
+
+    document.getElementById('toggle-tileset-3').addEventListener('change', (e) => {
+      map.setLayoutProperty(
+        'tileset-3-layer',
+        'visibility',
+        e.target.checked ? 'visible' : 'none'
+      );
+    });
+  </script>
+
+</body>
+</html>
